@@ -1,0 +1,51 @@
+﻿@page "/patientlist"
+@using HumanaCRUD.Data
+@using HumanaCRUD.Controller
+
+<h3>Active Patient List</h3>
+<p>This page show all the active patients</p>
+
+@if (patients == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Gener</th>
+                <th>Birth Day</th>
+                <th>Country</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var patient in patients)
+            {
+            <tr>
+                <td>@patient.Name.FirstOrDefault().Family</td>
+                <td>@patient.Gender</td>
+                <td>@patient.BirthDate.UtcDateTime.Date</td>
+                <td>@patient.Address.FirstOrDefault().Country</td>
+                <td>
+                    <a href="/patientdetails/@patient.Id"><i>Edit</i></a>
+                    <a href="/patientdetails/@patient.Id"><i>Delete</i></a>
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<Patient> patients;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var patientController = new PatientController();
+        var bundle = await patientController.GetBundlePatientsAsync();
+        patients = bundle.Entry.Select(e => e.Patient).ToList();
+    }
+}

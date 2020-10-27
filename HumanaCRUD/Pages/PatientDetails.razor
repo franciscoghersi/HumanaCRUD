@@ -1,0 +1,38 @@
+﻿@page "/patientdetails"
+@page "/patientdetails/{id:int}"
+@using HumanaCRUD.Data
+<h3>Show Patient</h3>
+
+<EditForm Model="@patient">
+    <table>
+        <tr>
+            <td>Name: </td>
+            <td><input type="text" @bind="patient.Name.FirstOrDefault().Text" /></td>
+        </tr>
+        <tr>
+            <td>Family: </td>
+            <td><input type="text" @bind="patient.Name.FirstOrDefault().Family" /></td>
+        </tr>
+        <tr>
+            <td>Gender: </td>
+            <td><input type="text" @bind="patient.Gender" /></td>
+        </tr>
+        <tr>
+            <td>Birth: </td>
+            <td><input type="text" @bind="patient.BirthDate" /></td>
+        </tr>
+        <td colspan="2" style="text-align:center">
+            <input type="submit" value="Save"/>
+            <input type="button" value="Cancel"/>
+        </td>
+    </table>
+
+
+</EditForm>
+@code {
+    [Parameter]
+    public int id { get; set; }
+
+    Patient patient = new Patient();
+
+}

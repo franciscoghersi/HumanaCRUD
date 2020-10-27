@@ -1,0 +1,50 @@
+﻿@page "/organizationlist"
+@using HumanaCRUD.Data
+@using HumanaCRUD.Controller
+
+<h3>Active Organization List</h3>
+<p>This page show all the active organizations</p>
+
+@if (organizations == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Type Contact</th>
+                <th>Contact </th>
+                <th>ACtions </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var organization in organizations)
+            {
+
+            <tr>
+                <td>@organization.Name</td>
+                <td>@organization.Telecom.FirstOrDefault().System</td>
+                <td>@organization.Telecom.FirstOrDefault().Value</td>
+                <td>
+                    <a href="/patientdetails/@organization.Id"><i>Edit</i></a>
+                    <a href="/patientdetails/@organization.Id"><i>Delete</i></a>
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<Organization> organizations;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var organizationController = new OrganizationController();
+        var bundle = await organizationController.GetBundleOrganizationAsync();
+        organizations = bundle.Entry.Select(e => e.Organization).ToList();
+    }
+}

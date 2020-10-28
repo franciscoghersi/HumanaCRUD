@@ -1,0 +1,72 @@
+﻿@page "/organizationDetails"
+@page "/organizationDetails/{id}"
+@inject NavigationManager NavigationManager
+
+@using HumanaCRUD.Data
+@using HumanaCRUD.Controller
+<h3>Show Organization</h3>
+
+<EditForm Model="@organization">
+    <table>
+        <tr>
+            <td>Name: </td>
+            <td><input type="text" @bind="@organization.Name" /></td>
+        </tr>
+        <tr>
+            <td>System: </td>
+            <td><input type="text" @bind="@organization.Telecom.FirstOrDefault().System" /></td>
+        </tr>
+        <tr>
+            <td>Contact: </td>
+            <td><input type="text" @bind="@organization.Telecom.FirstOrDefault().Value" /></td>
+        </tr>
+        <td colspan="2" style="text-align:center">
+            <input type="submit" value="Save" @onclick="SavePatient" />
+            <input type="button" value="Cancel" @onclick="CancelPatient" />
+        </td>
+    </table>
+
+
+</EditForm>
+@code {
+
+    [Parameter]
+    public string id { get; set; }
+
+    Organization organization = new Organization();
+    OrganizationController OrganizationController = new OrganizationController();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var telecom = new Telecom() { 
+            System = "",
+            Value = ""
+        };
+        organization.Telecom = new List<Telecom>();
+        organization.Telecom.Add(telecom);
+
+        if (id != null)
+        {
+            organization = await OrganizationController.GetOrganizationAsync(id);
+        }
+    }
+
+    protected void CancelPatient()
+    {
+        NavigationManager.NavigateTo("/organizationlist");
+    }
+
+    public async Task SavePatient()
+    {
+        if (organization.Id != null)
+        {
+            // await OrganizationController.UpdatePatientAsync(organization);
+        }
+        else
+        {
+            //Hacer el post
+        }
+        NavigationManager.NavigateTo("/organizationlist");
+    }
+
+}

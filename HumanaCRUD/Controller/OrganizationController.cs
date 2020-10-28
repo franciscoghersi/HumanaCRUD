@@ -10,7 +10,7 @@ namespace HumanaCRUD.Controller
     public class OrganizationController
     {
         const string APIurl = "https://stu3.test.pyrohealth.net/fhir/Organization/";
-        public async Task<Patient> GetOrganizationAsync(string id)
+        public async Task<Organization> GetOrganizationAsync(string id)
         {
             using (var client = new HttpClient())
             {
@@ -18,7 +18,7 @@ namespace HumanaCRUD.Controller
                 var response = await client.GetAsync(APIurl + id).ConfigureAwait(false);
                 response.EnsureSuccessStatusCode();
                 string responseBody = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<Patient>(responseBody);
+                return JsonConvert.DeserializeObject<Organization>(responseBody);
             }
         }
 
@@ -48,6 +48,16 @@ namespace HumanaCRUD.Controller
                 response.EnsureSuccessStatusCode();
                 string responseBody = await response.Content.ReadAsStringAsync();
                 return JsonConvert.DeserializeObject<BundleOrganization>(responseBody);
+            }
+        }
+        public async Task<bool> DeleteOrganizationAsync(string id)
+        {
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Add("Accept", "application/fhir+json");
+                var response = await client.DeleteAsync(APIurl + id).ConfigureAwait(false);
+                response.EnsureSuccessStatusCode();
+                return response.IsSuccessStatusCode;
             }
         }
 

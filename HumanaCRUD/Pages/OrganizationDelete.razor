@@ -1,0 +1,53 @@
+﻿@page "/organizationDelete/{id}"
+@using HumanaCRUD.Controller
+@using HumanaCRUD.Data
+@inject NavigationManager  NavigationManager
+
+<h3>Patient Delete</h3>
+<p style="color:red">You will delete that organization, Are you sure?</p>
+
+<EditForm Model="@organization">
+    <table>
+        <tr>
+            <td>Name: </td>
+            <td><input type="text" @bind="@organization.Name" /></td>
+        </tr>
+        <tr>
+            <td>Contact Type: </td>
+            @*<td><input type="text" @bind="@organization.Telecom.FirstOrDefault().System" /></td>*@
+        </tr>
+        <tr>
+            <td>Contact: </td>
+            @*<td><input type="text" @bind="@organization.Telecom.FirstOrDefault().Value" /></td>*@
+        </tr>
+        <td colspan="2" style="text-align:center">
+            <input type="submit" value="Delete" @onclick="DeletePatient" />
+            <input type="button" value="Cancel" @onclick="CancelPatient" />
+        </td>
+    </table>
+
+</EditForm>
+
+@code {
+    [Parameter]
+    public string id { get; set; }
+
+    Organization organization = new Organization();
+    OrganizationController organizationController = new OrganizationController();
+
+    protected override async Task OnInitializedAsync()
+    {
+        organization = await organizationController.GetOrganizationAsync(id);
+    }
+
+    protected void CancelPatient()
+    {
+        NavigationManager.NavigateTo("/organizationlist");
+    }
+
+    protected async void DeletePatient()
+    {
+        var a = await organizationController.DeleteOrganizationAsync(id);
+        NavigationManager.NavigateTo("/organizationlist");
+    }
+}

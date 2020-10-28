@@ -51,5 +51,40 @@ namespace HumanaCRUD.Controller
             }
         }
 
+        public async Task<bool> UpdatePatientAsync(Patient patient)
+        {
+            string JSONresult = JsonConvert.SerializeObject(patient);
+
+            //using (var client = new HttpClient())
+            //{
+            //    client.DefaultRequestHeaders.Add("Accept", "application/fhir+json");
+            //    client.DefaultRequestHeaders.TryAddWithoutValidation("Content-Type", "application/fhir+json; charset=utf-8");
+            //    var a = new StringContent(JSONresult, Encoding.UTF8, "application/fhir+json");
+            //    var response = await client.PutAsync(APIurl + patient.Id,
+            //         new StringContent(JSONresult, Encoding.UTF8, "application/fhir+json")).ConfigureAwait(false);
+            //    response.EnsureSuccessStatusCode();
+            //    //return response.IsSuccessStatusCode;
+            //}
+            var client = new HttpClient();
+            client.DefaultRequestHeaders.Add("Accept", "application/fhir+json");
+            client.DefaultRequestHeaders.TryAddWithoutValidation("Content-Type", "application/fhir+json; charset=utf-8");
+            var httpResponse = await HttpClientExtensions.PutAsJsonAsync<Patient>(client, APIurl + patient.Id+ "?_format=json", patient);
+            var RequestBody = JsonConvert.SerializeObject(patient);
+            var httpStatus = httpResponse.StatusCode;
+           var  UpdateResponse = await httpResponse.Content.ReadAsStringAsync();
+            return true;
+        }
+
+        public async Task<bool> DeletePatientAsync(string id)
+        {
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Add("Accept", "application/fhir+json");
+                var response = await client.DeleteAsync(APIurl + id).ConfigureAwait(false);
+                response.EnsureSuccessStatusCode();
+                return response.IsSuccessStatusCode;
+            }
+        }
+
     }
 }
